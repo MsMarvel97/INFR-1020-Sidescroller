@@ -1,5 +1,4 @@
 #include "Game.h"
-
 #include <random>
 
 
@@ -37,9 +36,10 @@ void Game::InitGame()
 	//Replace this with your own scene.
 	m_scenes.push_back(new FirstCreation("FIRST SCENE!!!!"));
 	m_scenes.push_back(new PhysicsPlayground("PHYSICS PLAYGROUND TIEM!!!"));
+	m_scenes.push_back(new AnimationSpritePlayground("Animation TIEM!!!!"));
 	 
 	//Sets active scene reference to our scene
-	m_activeScene = m_scenes[1];
+	m_activeScene = m_scenes[2];
 
 	m_activeScene->InitScene(float(BackEnd::GetWindowWidth()), float(BackEnd::GetWindowHeight()));
 
