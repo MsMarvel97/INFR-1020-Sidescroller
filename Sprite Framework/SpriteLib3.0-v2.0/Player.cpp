@@ -50,7 +50,7 @@ void Player::InitPlayer(std::string& fileName, std::string& animationJSON, int w
 	//Idle Right
 	m_animController->AddAnimation(animations["IdleRight"].get<Animation>());
 	//Idle Left
-
+	m_animController->AddAnimation(animations["IdleLeft"].get<Animation>());
 
 	//MOVEMENT ANIMATIONS
 
@@ -60,16 +60,18 @@ void Player::InitPlayer(std::string& fileName, std::string& animationJSON, int w
 	m_animController->AddAnimation(animations["WalkLeft"].get<Animation>());
 	//Run Right
 	m_animController->AddAnimation(animations["RunRight"].get<Animation>());
-	m_animController->AddAnimation(animations["RunLeft"].get<Animation>());
 	//Run Left
+	m_animController->AddAnimation(animations["RunLeft"].get<Animation>());
+
+	//JUMP ANIMATIONS
 
 	//Jump Right
 	m_animController->AddAnimation(animations["JumpRight"].get<Animation>());
 	//Jump Left
 	m_animController->AddAnimation(animations["JumpLeft"].get<Animation>());
 
-	m_animController->SetActiveAnim(IDLERIGHT);
 	//Set Default Animation
+	m_animController->SetActiveAnim(IDLERIGHT);
 }
 
 void Player::Update()
@@ -234,56 +236,53 @@ void Player::MovementUpdate()
 			{
 				speed *= 2.f;
 			}
-			
+			if (Input::GetKey(Key::A))
+			{
+				vec3 accelerationA = vec3(-1.f, 0.f, 0.f);
+				vec3 acceleratedA = vec3();
 
-				if (Input::GetKey(Key::A))
+				if (startTime == 0)
 				{
-					vec3 accelerationA = vec3(-1.f, 0.f, 0.f);
-					vec3 acceleratedA = vec3();
-
-					if (startTime == 0)
-					{
-						startTime = Timer::time;
-					}
-
-					float timer = StopWatch(startTime);
-
-					if (m_physBody->GetVelocity().x > -60.f)
-					{
-						acceleratedA = m_physBody->GetVelocity() + accelerationA * timer;
-						m_physBody->SetVelocity(acceleratedA);
-					}
-
-					printf("%f m/s || %f \n", player.GetPosition().x, timer);
-
-					m_facing = LEFT;
-					m_moving = true;
-					boolMove = true;
+					startTime = Timer::time;
 				}
 
-				else if (m_physBody->GetVelocity().x < 0.f)
+				float timer = StopWatch(startTime);
+
+				if (m_physBody->GetVelocity().x > -60.f)
 				{
-					vec3 deceleration = vec3(1.f, 0.f, 0.f);
-					vel = vel + vec3(1.f, 0.f, 0.f);
-					vec3 decelerated = vec3(vel * speed + deceleration);
-
-					if (startTime == 0)
-					{
-						startTime = Timer::time;
-					}
-
-					float timer = StopWatch(startTime);
-
-					decelerated = m_physBody->GetVelocity() + vel * Timer::deltaTime;
-					m_physBody->SetVelocity(decelerated);
-					printf("%fm/s || %fs \n", m_physBody->GetVelocity().x, timer);
-
-					m_facing = LEFT;
-					m_moving = true;
-					boolMove = true;
+					acceleratedA = m_physBody->GetVelocity() + accelerationA * timer;
+					m_physBody->SetVelocity(acceleratedA);
 				}
-			
 
+				printf("%f m/s || %f \n", player.GetPosition().x, timer);
+
+				m_facing = LEFT;
+				m_moving = true;
+				boolMove = true;
+			}
+
+			else if (m_physBody->GetVelocity().x < 0.f)
+			{
+				vec3 deceleration = vec3(1.f, 0.f, 0.f);
+				vel = vel + vec3(1.f, 0.f, 0.f);
+				vec3 decelerated = vec3(vel * speed + deceleration);
+
+				if (startTime == 0)
+				{
+					startTime = Timer::time;
+				}
+
+				float timer = StopWatch(startTime);
+
+				decelerated = m_physBody->GetVelocity() + vel * Timer::deltaTime;
+				m_physBody->SetVelocity(decelerated);
+				printf("%fm/s || %fs \n", m_physBody->GetVelocity().x, timer);
+
+				m_facing = LEFT;
+				m_moving = true;
+				boolMove = true;
+			}
+			
 			if (Input::GetKeyDown(Key::T))//Reset Timer
 			{
 				startTime = 0;
@@ -433,42 +432,42 @@ void Player::MovementUpdate()
 	}
 }
 
-		void Player::AnimationUpdate()
+void Player::AnimationUpdate()
+{
+	int activeAnimation = 0;
+
+	if (m_moving)
+	{
+		//puts it into the WALK category
+		activeAnimation = WALK;
+	}
+	else if (m_attacking)
+	{
+		activeAnimation = ATTACK;
+
+		//check if attack animation is done
+		if (m_animController->GetAnimation(m_animController->GetActiveAnim()).GetAnimationDone())
 		{
-			int activeAnimation = 0;
+			//will auto set to idle
+			m_locked = false;
+			m_attacking = false;
+			//resets the attack animation
+			m_animController->GetAnimation(m_animController->GetActiveAnim()).Reset();
 
-			if (m_moving)
-			{
-				//puts it into the WALK category
-				activeAnimation = WALK;
-			}
-			else if (m_attacking)
-			{
-				activeAnimation = ATTACK;
-
-				//check if attack animation is done
-				if (m_animController->GetAnimation(m_animController->GetActiveAnim()).GetAnimationDone())
-				{
-					//will auto set to idle
-					m_locked = false;
-					m_attacking = false;
-					//resets the attack animation
-					m_animController->GetAnimation(m_animController->GetActiveAnim()).Reset();
-
-					activeAnimation = IDLE;
-				}
-			}
-			else
-			{
-				activeAnimation = IDLE;
-			}
-			SetActiveAnimation(activeAnimation + (int)m_facing);
+			activeAnimation = IDLE;
 		}
+	}
+	else
+	{
+		activeAnimation = IDLE;
+	}
+	SetActiveAnimation(activeAnimation + (int)m_facing);
+}
 
 
-		void Player::SetActiveAnimation(int anim)
-		{
-			m_animController->SetActiveAnim(anim);
-		}
+void Player::SetActiveAnimation(int anim)
+{
+	m_animController->SetActiveAnim(anim);
+}
 
 	
