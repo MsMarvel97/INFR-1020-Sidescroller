@@ -70,6 +70,8 @@ void Scene::InitScene(float windowWidth, float windowHeight)
 		ECS::GetComponent<Sprite>(entity).SetTransparency(0.5f);
 		ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, 0.f, 0.f));
 	}
+
+	
 }
 
 void Scene::Update()

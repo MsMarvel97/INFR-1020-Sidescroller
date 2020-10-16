@@ -3,8 +3,7 @@
 
 #include "BackEnd.h"
 
-#define TOPDOWN
-
+//#define TOPDOWN
 
 enum AnimEnums
 {
@@ -85,6 +84,14 @@ private:
 	//Have we locked the player from moving during this animation?
 	bool m_locked = false;
 
+	bool boolMove = false;
+	bool isJumping = false;
+	bool jump = false;
+	int moveToggle = 0;
+	float sTime = 0.f;
+
+
+
 	//A reference to our sprite
 	Sprite* m_sprite = nullptr;
 	//A reference to our animation controller
@@ -96,10 +103,10 @@ private:
 	//A reference to our physics body
 	PhysicsBody* m_physBody = nullptr;
 	//Does this player have physics?
-	bool m_hasPhysics = false;
+	bool m_hasPhysics = true;
 
 	//Default animation direction (feel free to change this to suit your game. If you're making a side-scroller, left or right would be better
-	AnimDir m_facing = LEFT;
+	AnimDir m_facing = LEFT; 
 };
 
 #endif // !__PLAYER_H__

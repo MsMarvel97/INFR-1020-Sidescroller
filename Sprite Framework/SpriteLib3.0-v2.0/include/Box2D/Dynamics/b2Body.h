@@ -326,7 +326,7 @@ public:
 
 	/// Set the sleep state of the body. A sleeping body has very
 	/// low CPU cost.
-	/// @param flag set to true to wake the body, false to put it to sleep.
+	/// @param flag set to true to wake the body, false to put it to slee.
 	void SetAwake(bool flag);
 
 	/// Get the sleeping state of this body.
