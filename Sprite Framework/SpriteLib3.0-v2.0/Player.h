@@ -10,30 +10,30 @@ enum AnimEnums
 
 	WALKLEFT,
 	WALKRIGHT,
-	
-	ATTACKLEFT,
-	ATTACKRIGHT,
 
 	RUNLEFT,
 	RUNRIGHT,
 
 	JUMPLEFT,
-	JUMPRIGHT
+	JUMPRIGHT,
+
+	ATTACKLEFT,
+	ATTACKRIGHT
 };
 
 enum AnimTypes
 {
 	IDLE = 0,
 	WALK = 2,
-	ATTACK = 4,
-	RUN = 6,
-	JUMP = 8
+	RUN = 4,
+	JUMP = 6,
+	ATTACK = 8
 };
 
 enum AnimDir
 {
 	LEFT,
-	RIGHT,
+	RIGHT
 };
 
 class Player

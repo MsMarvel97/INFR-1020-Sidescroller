@@ -127,6 +127,18 @@ void Scene::CreateCameraEntity(bool mainCamera, float windowWidth, float windowH
 	}
 }
 
+/*void Scene::CreateSpriteEntity()
+	{
+		//Create Entity
+		auto entity = ECS::CreateEntity();
+		
+		//Adds Components
+		ECS::AttachComponent<Sprite>(entity);
+		ECS::AttachComponent<Transform>(entity);
+
+		//Setup Components
+		std::string fileName = 
+	}*/
 entt::registry* Scene::GetScene() const
 {
 	return m_sceneReg;

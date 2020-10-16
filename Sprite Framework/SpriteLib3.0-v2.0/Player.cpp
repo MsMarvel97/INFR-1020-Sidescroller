@@ -47,28 +47,35 @@ void Player::InitPlayer(std::string& fileName, std::string& animationJSON, int w
 
 	//IDLE ANIMATIONS
 
-	//Idle Right
-	m_animController->AddAnimation(animations["IdleRight"].get<Animation>());
 	//Idle Left
 	m_animController->AddAnimation(animations["IdleLeft"].get<Animation>());
+	//Idle Right
+	m_animController->AddAnimation(animations["IdleRight"].get<Animation>());
 
 	//MOVEMENT ANIMATIONS
 
-	//Walk Right
-	m_animController->AddAnimation(animations["WalkRight"].get<Animation>());
 	//Walk Left
 	m_animController->AddAnimation(animations["WalkLeft"].get<Animation>());
-	//Run Right
-	m_animController->AddAnimation(animations["RunRight"].get<Animation>());
+	//Walk Right
+	m_animController->AddAnimation(animations["WalkRight"].get<Animation>());
 	//Run Left
 	m_animController->AddAnimation(animations["RunLeft"].get<Animation>());
+	//Run Right
+	m_animController->AddAnimation(animations["RunRight"].get<Animation>());
 
 	//JUMP ANIMATIONS
 
-	//Jump Right
-	m_animController->AddAnimation(animations["JumpRight"].get<Animation>());
 	//Jump Left
 	m_animController->AddAnimation(animations["JumpLeft"].get<Animation>());
+	//Jump Right
+	m_animController->AddAnimation(animations["JumpRight"].get<Animation>());
+
+	//ATTACK ANIMATIONS
+
+	//Attack Left
+	m_animController->AddAnimation(animations["AttackLeft"].get<Animation>());
+	//Attack Right
+	m_animController->AddAnimation(animations["AttackRight"].get<Animation>());
 
 	//Set Default Animation
 	m_animController->SetActiveAnim(IDLERIGHT);
@@ -337,7 +344,7 @@ void Player::MovementUpdate()
 				}
 			//}
 
-			if (Input::GetKeyDown(Key::Space))
+			if (Input::GetKeyDown(Key::W))
 			{
 				if (timeToJump == false)
 				{
@@ -438,8 +445,18 @@ void Player::AnimationUpdate()
 
 	if (m_moving)
 	{
-		//puts it into the WALK category
-		activeAnimation = WALK;
+		if (Input::GetKey(Key::Shift))
+		{
+			activeAnimation = RUN;
+		}
+		else if (Input::GetKey(Key::W))
+		{
+			activeAnimation = JUMP;
+		}
+		else
+		{
+			activeAnimation = WALK;
+		}
 	}
 	else if (m_attacking)
 	{
