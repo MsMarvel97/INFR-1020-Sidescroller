@@ -1,14 +1,21 @@
 #include "Player.h"
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+
 int timeCounter = 0;
 int counterD = 0;
-using namespace std;
 float startTime = 0;
+float letsAGo = 0;
 float jumpTime = 0;
 float jumpStart = 0;
 bool timeToJump = false;
 float swStart = 0;
 float swNow = 0;
+float graphCounter = 0;
 vec3 vel = vec3(0.f, 0.f, 0.f);
+vec3 displacement = vec3();
 
 Player::Player()
 {
@@ -235,7 +242,7 @@ void Player::MovementUpdate()
 {
 	auto& player = ECS::GetComponent<PhysicsBody>(MainEntities::MainPlayer());
 	vec3 vel = vec3(0.f, 0.f, 0.f);
-	float speed = 3.f;
+	float speed = 2.8f;
 	m_moving = false;
 
 	if (Input::GetKeyDown(Key::Alt))
@@ -258,7 +265,7 @@ void Player::MovementUpdate()
 
 			if (Input::GetKey(Key::Shift))
 			{
-				speed *= 2.f;
+				speed *= 1.5f;
 			}
 			
 
@@ -274,22 +281,47 @@ void Player::MovementUpdate()
 
 					float timer = StopWatch(startTime);
 
-					if (m_physBody->GetVelocity().x > -60.f)
+					if (Input::GetKey(Key::Shift) && m_physBody->GetVelocity().x > -90.f)
 					{
-						acceleratedA = m_physBody->GetVelocity() + accelerationA * speed;
-						m_physBody->SetVelocity(acceleratedA);
+						acceleratedA = player.GetVelocity() + accelerationA * speed;
+						player.SetVelocity(acceleratedA);
 					}
 
-					printf("%f m/s || %f \n", player.GetPosition().x, timer);
+					if (m_physBody->GetVelocity().x > -60.f)
+					{
+						acceleratedA = player.GetVelocity() + accelerationA * speed;
+						player.SetVelocity(acceleratedA);
+					}
 
+					if (m_physBody->GetVelocity().x <= -60.f)
+					{
+						player.SetVelocity(vec3(-60.f, 0.f, 0.f));
+					}
+
+					if (graphCounter == 0)
+					{
+						printf("%f,%f \n", timer, player.GetVelocity().x);
+						graphCounter++;
+					}
+
+					else if (graphCounter >= 1 && graphCounter < 10)
+					{
+						graphCounter+=1;
+					}
+
+					else if (graphCounter == 10)
+					{
+						graphCounter = 0;
+					}
 					m_facing = LEFT;
 					m_moving = true;
 					boolMove = true;
 				}
 
-				else if (m_physBody->GetVelocity().x < 0.f)
+				else if (m_physBody->GetVelocity().x < 0.f && !m_facing == RIGHT)
 				{
 					vec3 deceleration = vec3(1.f, 0.f, 0.f);
+					float decelerating = 1.f;
 					vel = vel + vec3(1.f, 0.f, 0.f);
 					vec3 decelerated = vec3(vel * speed + deceleration);
 
@@ -302,7 +334,8 @@ void Player::MovementUpdate()
 
 					decelerated = m_physBody->GetVelocity() + vel * Timer::deltaTime;
 					m_physBody->SetVelocity(decelerated);
-					printf("%fm/s || %fs \n", m_physBody->GetVelocity().x, timer);
+
+					printf("%f,%f \n", timer, player.GetVelocity().x);
 
 					m_facing = LEFT;
 					m_moving = true;
@@ -328,20 +361,49 @@ void Player::MovementUpdate()
 
 					float timer = StopWatch(startTime);
 
-					if (m_physBody->GetVelocity().x <= 60.f)
+					if (Input::GetKey(Key::Shift) && m_physBody->GetVelocity().x <= 90.f)
 					{
 						acceleratedD = m_physBody->GetVelocity() + accelerationD * speed;
 						m_physBody->SetVelocity(acceleratedD);
 					}
 
+					if (Input::GetKey(Key::Shift) && m_physBody->GetVelocity().x >= 90.f)
+					{
+						player.SetVelocity(vec3(90.f, 0.f, 0.f));
+					}
 
-					printf("%f m/s || %f \n", m_physBody->GetVelocity().x, timer);
+					if (m_physBody->GetVelocity().x <= 60.f && !Input::GetKey(Key::Shift))
+					{
+						acceleratedD = m_physBody->GetVelocity() + accelerationD * speed;
+						m_physBody->SetVelocity(acceleratedD);
+					}
+
+					if (m_physBody->GetVelocity().x >= 60.f && !Input::GetKey(Key::Shift))
+					{
+						player.SetVelocity(vec3(60.f, 0.f, 0.f));
+					}
+
+
+					if (graphCounter == 0)
+					{
+						printf("%f,%f \n", timer, player.GetVelocity().x);
+						graphCounter++;
+					}
+					if (graphCounter >= 1 && graphCounter < 10)
+					{
+						graphCounter += 1;
+					}
+					if (graphCounter == 10)
+					{
+						graphCounter = 0;
+					}
+
 					m_facing = RIGHT;
 					m_moving = true;
 					boolMove = true;
 				}
 
-				else if (m_physBody->GetVelocity().x > 0.f)
+				else if (m_physBody->GetVelocity().x > 0.f && !m_facing == LEFT)
 				{
 
 					vec3 deceleration = vec3(-1.f, 0.f, 0.f);
@@ -356,7 +418,7 @@ void Player::MovementUpdate()
 					float timer = StopWatch(startTime);
 					decelerated = m_physBody->GetVelocity() + vel * Timer::deltaTime;
 					m_physBody->SetVelocity(decelerated);
-					printf("%fm/s || %fs \n", m_physBody->GetVelocity().x, timer);
+					printf("%f,%f \n", timer, player.GetVelocity().x);
 
 					m_facing = RIGHT;
 					m_moving = true;
@@ -387,48 +449,59 @@ void Player::MovementUpdate()
 					timeToJump = false;
 				}
 			}
-			
-
-
-			/*if (Input::GetKeyDown(Key::Space))
-			{
-				if (vel.y <= 0)
-				{
-					jump = true;
-				}
-			}
-
-			if (jump) {
-				if (vel.y > 0) {
-					sTime = Timer::currentClock;
-					isJumping = true;
-				}
-				else {
-					float dTime = Timer::currentClock;
-					speed = 5.8;
-					if (Input::GetKey(Key::Shift)) {
-						speed *= 1.1;
-					}
-					vel = vel + vec3(0.f, 4.5f, 0.f);
-					if ((dTime - sTime) >= 200) {
-						isJumping = false;
-						jump = false;
-					}
-				}*/
-
-			/*}*/
-
 		}
 	}
 
 	if(moveToggle == 1)
 	{
-		float speed = 1000.f;
+		float speed = 10.f;
 
 		if (Input::GetKey(Key::A))
 		{
 			float timeTester = speed * Timer::deltaTime;
+			float displaced = 0;
 			float oldX = m_transform->GetPositionX() - timeTester;
+			vec3 imThere = vec3 (0.f, 0.f, 0.f);
+			vec3 imHere = vec3 (0.f, 0.f, 0.f);
+
+
+			if (displacement.x >= 0.f && displacement.x < 40.f)
+			{
+				//displacement.x += 10.f;
+				//imHere = (vec3(player.GetPosition());
+				//imThere = imHere + displacement;
+				//Transform::SetPosition(imThere);
+				////player.SetPosition(imThere);
+				////player.Update();
+				//displaced = imThere.x - imHere.x;
+				//printf("%f here || %f there || %f displaced\n", imHere.x, imThere.x, displaced);
+
+				displacement.x += 10.f;
+				imHere.x = player.GetPosition().x;
+				imThere = imHere + displacement;
+				/*Transform::SetPosition(imThere);*/
+				displaced = imThere.x - imHere.x;
+				printf("%f here || %f there || %f displaced\n", imHere.x, imThere.x, displaced);
+			}
+
+			if (displacement.x >= 40.f && displacement.x < 80.f)
+			{
+				displacement.x += displacement.x * timeTester;
+				//imThere += imHere + displacement;
+				//player.SetPosition(imThere);
+				/*Transform::SetPosition(imThere);*/
+			}
+			
+			if (displacement.x >= 90)
+			{
+				displacement.x = 90.f;
+				imThere = imHere + displacement;
+				player.SetPosition(imThere);
+			}
+
+
+
+
 
 		/*	displacement = (m_physBody->GetVelocity().x * Timer::deltaTime) + (0.5 * acceleration * Timer::deltaTime)pow 2 */
 			
