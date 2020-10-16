@@ -95,7 +95,7 @@ void Player::InitPlayer(std::string& fileName, std::string& animationJSON, int w
 #ifdef TOPDOWN
 	//Attack up
 	m_animController->AddAnimation(animations["AttackUp"].get<Animation>());
-	
+
 	//Attack down
 	m_animController->AddAnimation(animations["AttackDown"].get<Animation>());
 #endif
@@ -267,81 +267,81 @@ void Player::MovementUpdate()
 			{
 				speed *= 1.5f;
 			}
-			
 
-				if (Input::GetKey(Key::A))
+
+			if (Input::GetKey(Key::A))
+			{
+				vec3 accelerationA = vec3(-1.f, 0.f, 0.f);
+				vec3 acceleratedA = vec3();
+
+				if (startTime == 0)
 				{
-					vec3 accelerationA = vec3(-1.f, 0.f, 0.f);
-					vec3 acceleratedA = vec3();
-
-					if (startTime == 0)
-					{
-						startTime = Timer::time;
-					}
-
-					float timer = StopWatch(startTime);
-
-					if (Input::GetKey(Key::Shift) && m_physBody->GetVelocity().x > -90.f)
-					{
-						acceleratedA = player.GetVelocity() + accelerationA * speed;
-						player.SetVelocity(acceleratedA);
-					}
-
-					if (m_physBody->GetVelocity().x > -60.f)
-					{
-						acceleratedA = player.GetVelocity() + accelerationA * speed;
-						player.SetVelocity(acceleratedA);
-					}
-
-					if (m_physBody->GetVelocity().x <= -60.f)
-					{
-						player.SetVelocity(vec3(-60.f, 0.f, 0.f));
-					}
-
-					if (graphCounter == 0)
-					{
-						printf("%f,%f \n", timer, player.GetVelocity().x);
-						graphCounter++;
-					}
-
-					else if (graphCounter >= 1 && graphCounter < 10)
-					{
-						graphCounter+=1;
-					}
-
-					else if (graphCounter == 10)
-					{
-						graphCounter = 0;
-					}
-					m_facing = LEFT;
-					m_moving = true;
-					boolMove = true;
+					startTime = Timer::time;
 				}
 
-				else if (m_physBody->GetVelocity().x < 0.f && !m_facing == RIGHT)
+				float timer = StopWatch(startTime);
+
+				if (Input::GetKey(Key::Shift) && m_physBody->GetVelocity().x > -90.f)
 				{
-					vec3 deceleration = vec3(1.f, 0.f, 0.f);
-					float decelerating = 1.f;
-					vel = vel + vec3(1.f, 0.f, 0.f);
-					vec3 decelerated = vec3(vel * speed + deceleration);
+					acceleratedA = player.GetVelocity() + accelerationA * speed;
+					player.SetVelocity(acceleratedA);
+				}
 
-					if (startTime == 0)
-					{
-						startTime = Timer::time;
-					}
+				if (m_physBody->GetVelocity().x > -60.f)
+				{
+					acceleratedA = player.GetVelocity() + accelerationA * speed;
+					player.SetVelocity(acceleratedA);
+				}
 
-					float timer = StopWatch(startTime);
+				if (m_physBody->GetVelocity().x <= -60.f)
+				{
+					player.SetVelocity(vec3(-60.f, 0.f, 0.f));
+				}
 
-					decelerated = m_physBody->GetVelocity() + vel * Timer::deltaTime;
-					m_physBody->SetVelocity(decelerated);
-
+				if (graphCounter == 0)
+				{
 					printf("%f,%f \n", timer, player.GetVelocity().x);
-
-					m_facing = LEFT;
-					m_moving = true;
-					boolMove = true;
+					graphCounter++;
 				}
-			
+
+				else if (graphCounter >= 1 && graphCounter < 10)
+				{
+					graphCounter += 1;
+				}
+
+				else if (graphCounter == 10)
+				{
+					graphCounter = 0;
+				}
+				m_facing = LEFT;
+				m_moving = true;
+				boolMove = true;
+			}
+
+			else if (m_physBody->GetVelocity().x < 0.f && !m_facing == RIGHT)
+			{
+				vec3 deceleration = vec3(1.f, 0.f, 0.f);
+				float decelerating = 1.f;
+				vel = vel + vec3(1.f, 0.f, 0.f);
+				vec3 decelerated = vec3(vel * speed + deceleration);
+
+				if (startTime == 0)
+				{
+					startTime = Timer::time;
+				}
+
+				float timer = StopWatch(startTime);
+
+				decelerated = m_physBody->GetVelocity() + vel * Timer::deltaTime;
+				m_physBody->SetVelocity(decelerated);
+
+				printf("%f,%f \n", timer, player.GetVelocity().x);
+
+				m_facing = LEFT;
+				m_moving = true;
+				boolMove = true;
+			}
+
 
 			if (Input::GetKeyDown(Key::T))//Reset Timer
 			{
@@ -350,80 +350,80 @@ void Player::MovementUpdate()
 
 			//if (Input::GetKeyDown(Key::D))//Move Right (Physics)
 			//{
-				if (Input::GetKey(Key::D))
+			if (Input::GetKey(Key::D))
+			{
+				vec3 accelerationD = vec3(1.f, 0.f, 0.f);
+				vec3 acceleratedD = vec3();
+				if (startTime == 0)
 				{
-					vec3 accelerationD = vec3(1.f, 0.f, 0.f);
-					vec3 acceleratedD = vec3();
-					if (startTime == 0)
-					{
-						startTime = Timer::time;
-					}
-
-					float timer = StopWatch(startTime);
-
-					if (Input::GetKey(Key::Shift) && m_physBody->GetVelocity().x <= 90.f)
-					{
-						acceleratedD = m_physBody->GetVelocity() + accelerationD * speed;
-						m_physBody->SetVelocity(acceleratedD);
-					}
-
-					if (Input::GetKey(Key::Shift) && m_physBody->GetVelocity().x >= 90.f)
-					{
-						player.SetVelocity(vec3(90.f, 0.f, 0.f));
-					}
-
-					if (m_physBody->GetVelocity().x <= 60.f && !Input::GetKey(Key::Shift))
-					{
-						acceleratedD = m_physBody->GetVelocity() + accelerationD * speed;
-						m_physBody->SetVelocity(acceleratedD);
-					}
-
-					if (m_physBody->GetVelocity().x >= 60.f && !Input::GetKey(Key::Shift))
-					{
-						player.SetVelocity(vec3(60.f, 0.f, 0.f));
-					}
-
-
-					if (graphCounter == 0)
-					{
-						printf("%f,%f \n", timer, player.GetVelocity().x);
-						graphCounter++;
-					}
-					if (graphCounter >= 1 && graphCounter < 10)
-					{
-						graphCounter += 1;
-					}
-					if (graphCounter == 10)
-					{
-						graphCounter = 0;
-					}
-
-					m_facing = RIGHT;
-					m_moving = true;
-					boolMove = true;
+					startTime = Timer::time;
 				}
 
-				else if (m_physBody->GetVelocity().x > 0.f && !m_facing == LEFT)
+				float timer = StopWatch(startTime);
+
+				if (Input::GetKey(Key::Shift) && m_physBody->GetVelocity().x <= 90.f)
 				{
+					acceleratedD = m_physBody->GetVelocity() + accelerationD * speed;
+					m_physBody->SetVelocity(acceleratedD);
+				}
 
-					vec3 deceleration = vec3(-1.f, 0.f, 0.f);
-					vel = vel + vec3(-1.f, 0.f, 0.f);
-					vec3 decelerated = vec3(vel * speed + deceleration);
+				if (Input::GetKey(Key::Shift) && m_physBody->GetVelocity().x >= 90.f)
+				{
+					player.SetVelocity(vec3(90.f, 0.f, 0.f));
+				}
 
-					if (startTime == 0)
-					{
-						startTime = Timer::time;
-					}
+				if (m_physBody->GetVelocity().x <= 60.f && !Input::GetKey(Key::Shift))
+				{
+					acceleratedD = m_physBody->GetVelocity() + accelerationD * speed;
+					m_physBody->SetVelocity(acceleratedD);
+				}
 
-					float timer = StopWatch(startTime);
-					decelerated = m_physBody->GetVelocity() + vel * Timer::deltaTime;
-					m_physBody->SetVelocity(decelerated);
+				if (m_physBody->GetVelocity().x >= 60.f && !Input::GetKey(Key::Shift))
+				{
+					player.SetVelocity(vec3(60.f, 0.f, 0.f));
+				}
+
+
+				if (graphCounter == 0)
+				{
 					printf("%f,%f \n", timer, player.GetVelocity().x);
-
-					m_facing = RIGHT;
-					m_moving = true;
-					boolMove = true;
+					graphCounter++;
 				}
+				if (graphCounter >= 1 && graphCounter < 10)
+				{
+					graphCounter += 1;
+				}
+				if (graphCounter == 10)
+				{
+					graphCounter = 0;
+				}
+
+				m_facing = RIGHT;
+				m_moving = true;
+				boolMove = true;
+			}
+
+			else if (m_physBody->GetVelocity().x > 0.f && !m_facing == LEFT)
+			{
+
+				vec3 deceleration = vec3(-1.f, 0.f, 0.f);
+				vel = vel + vec3(-1.f, 0.f, 0.f);
+				vec3 decelerated = vec3(vel * speed + deceleration);
+
+				if (startTime == 0)
+				{
+					startTime = Timer::time;
+				}
+
+				float timer = StopWatch(startTime);
+				decelerated = m_physBody->GetVelocity() + vel * Timer::deltaTime;
+				m_physBody->SetVelocity(decelerated);
+				printf("%f,%f \n", timer, player.GetVelocity().x);
+
+				m_facing = RIGHT;
+				m_moving = true;
+				boolMove = true;
+			}
 			//}
 
 			if (Input::GetKeyDown(Key::Space))
@@ -435,7 +435,7 @@ void Player::MovementUpdate()
 				}
 			}
 
-			
+
 			if (timeToJump)
 			{
 				jumpTime = Timer::time - jumpStart;
@@ -452,7 +452,7 @@ void Player::MovementUpdate()
 		}
 	}
 
-	if(moveToggle == 1)
+	if (moveToggle == 1)
 	{
 		float speed = 10.f;
 
@@ -461,8 +461,8 @@ void Player::MovementUpdate()
 			float timeTester = speed * Timer::deltaTime;
 			float displaced = 0;
 			float oldX = m_transform->GetPositionX() - timeTester;
-			vec3 imThere = vec3 (0.f, 0.f, 0.f);
-			vec3 imHere = vec3 (0.f, 0.f, 0.f);
+			vec3 imThere = vec3(0.f, 0.f, 0.f);
+			vec3 imHere = vec3(0.f, 0.f, 0.f);
 
 
 			if (displacement.x >= 0.f && displacement.x < 40.f)
@@ -491,27 +491,27 @@ void Player::MovementUpdate()
 				//player.SetPosition(imThere);
 				/*Transform::SetPosition(imThere);*/
 			}
-			
+
 			if (displacement.x >= 90)
 			{
 				displacement.x = 90.f;
 				imThere = imHere + displacement;
-				player.SetPosition(imThere);
+				/*player.SetPosition(imThere);*/
 			}
 
 
 
 
 
-		/*	displacement = (m_physBody->GetVelocity().x * Timer::deltaTime) + (0.5 * acceleration * Timer::deltaTime)pow 2 */
-			
+			/*	displacement = (m_physBody->GetVelocity().x * Timer::deltaTime) + (0.5 * acceleration * Timer::deltaTime)pow 2 */
 
-			//if ()
-			//{
 
-			//}
-			//
-			//m_transform->SetPositionX();
+				//if ()
+				//{
+
+				//}
+				//
+				//m_transform->SetPositionX();
 			m_facing = LEFT;
 			m_moving = true;
 		}
@@ -532,42 +532,42 @@ void Player::MovementUpdate()
 	}
 }
 
-		void Player::AnimationUpdate()
+void Player::AnimationUpdate()
+{
+	int activeAnimation = 0;
+
+	if (m_moving)
+	{
+		//puts it into the WALK category
+		activeAnimation = WALK;
+	}
+	else if (m_attacking)
+	{
+		activeAnimation = ATTACK;
+
+		//check if attack animation is done
+		if (m_animController->GetAnimation(m_animController->GetActiveAnim()).GetAnimationDone())
 		{
-			int activeAnimation = 0;
+			//will auto set to idle
+			m_locked = false;
+			m_attacking = false;
+			//resets the attack animation
+			m_animController->GetAnimation(m_animController->GetActiveAnim()).Reset();
 
-			if (m_moving)
-			{
-				//puts it into the WALK category
-				activeAnimation = WALK;
-			}
-			else if (m_attacking)
-			{
-				activeAnimation = ATTACK;
-
-				//check if attack animation is done
-				if (m_animController->GetAnimation(m_animController->GetActiveAnim()).GetAnimationDone())
-				{
-					//will auto set to idle
-					m_locked = false;
-					m_attacking = false;
-					//resets the attack animation
-					m_animController->GetAnimation(m_animController->GetActiveAnim()).Reset();
-
-					activeAnimation = IDLE;
-				}
-			}
-			else
-			{
-				activeAnimation = IDLE;
-			}
-			SetActiveAnimation(activeAnimation + (int)m_facing);
+			activeAnimation = IDLE;
 		}
+	}
+	else
+	{
+		activeAnimation = IDLE;
+	}
+	SetActiveAnimation(activeAnimation + (int)m_facing);
+}
 
 
-		void Player::SetActiveAnimation(int anim)
-		{
-			m_animController->SetActiveAnim(anim);
-		}
+void Player::SetActiveAnimation(int anim)
+{
+	m_animController->SetActiveAnim(anim);
+}
 
-	
+
