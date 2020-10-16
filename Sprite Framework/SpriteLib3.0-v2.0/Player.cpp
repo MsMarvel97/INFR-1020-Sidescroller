@@ -276,7 +276,7 @@ void Player::MovementUpdate()
 
 					if (m_physBody->GetVelocity().x > -60.f)
 					{
-						acceleratedA = m_physBody->GetVelocity() + accelerationA * timer;
+						acceleratedA = m_physBody->GetVelocity() + accelerationA * speed;
 						m_physBody->SetVelocity(acceleratedA);
 					}
 
