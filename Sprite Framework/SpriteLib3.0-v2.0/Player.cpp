@@ -14,87 +14,62 @@ Player::Player()
 {
 }
 
-Player::Player(std::string& fileName, std::string& animationJSON, int width, int height, Sprite* sprite, AnimationController* controller, Transform* transform, bool hasPhys, PhysicsBody* body)
+Player::Player(std::string& fileName, std::string& animationJSON, int width, int height, Sprite* sprite, 
+					AnimationController* controller, Transform* transform, bool hasPhys, PhysicsBody* body)
 {
 	InitPlayer(fileName, animationJSON, width, height, sprite, controller, transform, hasPhys, body);
 }
 
-void Player::InitPlayer(std::string& fileName, std::string& animationJSON, int width, int height, Sprite* sprite, AnimationController* controller, Transform* transform, bool hasPhys, PhysicsBody* body)
+void Player::InitPlayer(std::string& fileName, std::string& animationJSON, int width, int height, Sprite* sprite,
+	AnimationController* controller, Transform* transform, bool hasPhys, PhysicsBody* body)
 {
-
-	//store references to the components
+	//Store references to the components
 	m_sprite = sprite;
 	m_animController = controller;
 	m_transform = transform;
 	m_hasPhysics = hasPhys;
+
 	if (hasPhys)
 	{
 		m_physBody = body;
 	}
 
-
-	//initializes UVs
+	//Initialize UVs
 	m_animController->InitUVs(fileName);
 
-	//loads the texture and sets width and height
+	//Loads the texture and sets width and height
 	m_sprite->LoadSprite(fileName, width, height, true, m_animController);
 	m_animController->SetVAO(m_sprite->GetVAO());
 	m_animController->SetTextureSize(m_sprite->GetTextureSize());
 
-	//loads in the animation JSON file
+	//Loads in the animations json file
 	nlohmann::json animations = File::LoadJSON(animationJSON);
 
-	//Idle animations\\
-
-	//Idle left
-	m_animController->AddAnimation(animations["IdleLeft"].get<Animation>());
+	//IDLE ANIMATIONS
 
 	//Idle Right
 	m_animController->AddAnimation(animations["IdleRight"].get<Animation>());
-#ifdef TOPDOWN
-	//Idle Up
-	m_animController->AddAnimation(animations["IdleUp"].get<Animation>());
-
-	//Idle Down
-	m_animController->AddAnimation(animations["IdleDown"].get<Animation>());
-#endif
+	//Idle Left
 
 
-	//Walk Animations\\
+	//MOVEMENT ANIMATIONS
 
-	//Walk left
-	m_animController->AddAnimation(animations["WalkLeft"].get<Animation>());
-
-	//Walk right
+	//Walk Right
 	m_animController->AddAnimation(animations["WalkRight"].get<Animation>());
+	//Walk Left
+	m_animController->AddAnimation(animations["WalkLeft"].get<Animation>());
+	//Run Right
+	m_animController->AddAnimation(animations["RunRight"].get<Animation>());
+	m_animController->AddAnimation(animations["RunLeft"].get<Animation>());
+	//Run Left
 
-#ifdef TOPDOWN
-	//Walk up
-	m_animController->AddAnimation(animations["WalkUp"].get<Animation>());
+	//Jump Right
+	m_animController->AddAnimation(animations["JumpRight"].get<Animation>());
+	//Jump Left
+	m_animController->AddAnimation(animations["JumpLeft"].get<Animation>());
 
-	//Walk down
-	m_animController->AddAnimation(animations["WalkDown"].get<Animation>());
-#endif
-
-
-	//Attack Animations\\
-
-	//Attack left
-	m_animController->AddAnimation(animations["AttackLeft"].get<Animation>());
-
-	//Attack right
-	m_animController->AddAnimation(animations["AttackRight"].get<Animation>());
-
-#ifdef TOPDOWN
-	//Attack up
-	m_animController->AddAnimation(animations["AttackUp"].get<Animation>());
-	
-	//Attack down
-	m_animController->AddAnimation(animations["AttackDown"].get<Animation>());
-#endif
-
+	m_animController->SetActiveAnim(IDLERIGHT);
 	//Set Default Animation
-	m_animController->SetActiveAnim(IDLELEFT);
 }
 
 void Player::Update()
@@ -237,7 +212,6 @@ void Player::MovementUpdate()
 	vec3 vel = vec3(0.f, 0.f, 0.f);
 	float speed = 3.f;
 	m_moving = false;
-
 	if (Input::GetKeyDown(Key::Alt))
 	{
 		if (moveToggle == 0)
