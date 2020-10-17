@@ -321,7 +321,7 @@ void Player::MovementUpdate()
 				if (graphCounter == 0)
 				{
 					//printing timer and player velocity information to console for graphing
-					printf("%f,%f, %f here \n", timer, player.GetVelocity().x, player.GetPosition().y);
+					printf("%f,%f \n", timer, player.GetVelocity().x);
 					//increasing graphCounter by 1
 					graphCounter++;
 				}
