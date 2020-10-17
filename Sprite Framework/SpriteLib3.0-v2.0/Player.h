@@ -2,56 +2,76 @@
 #define __PLAYER_H__
 
 #include "BackEnd.h"
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+
+//#define TOPDOWN
 
 enum AnimEnums
 {
 	IDLELEFT,
 	IDLERIGHT,
 
+	//Only in Top down
+#ifdef TOPDOWN
+	IDLEUP,
+	IDLEDOWN,
+#endif
+
 	WALKLEFT,
 	WALKRIGHT,
 
-	RUNLEFT,
-	RUNRIGHT,
-
-	JUMPLEFT,
-	JUMPRIGHT,
+	//Only in Top down
+#ifdef TOPDOWN
+	WALKUP,
+	WALKDOWN,
+#endif
 
 	ATTACKLEFT,
 	ATTACKRIGHT,
 
-	PUSHLEFT,
-	PUSHRIGHT,
-
-	DEATHLEFT,
-	DEATHRIGHT
+	//Only in Top down
+#ifdef TOPDOWN
+	ATTACKUP,
+	ATTACKDOWN
+#endif
 };
 
 enum AnimTypes
 {
+#ifdef TOPDOWN
+	IDLE = 0,
+	WALK = 4,
+	ATTACK = 8
+#endif
+#ifndef TOPDOWN
 	IDLE = 0,
 	WALK = 2,
-	RUN = 4,
-	JUMP = 6,
-	ATTACK = 8,
-	PUSH = 10,
-	DEATH = 12
+	ATTACK = 4
+#endif
 };
 
 enum AnimDir
 {
 	LEFT,
-	RIGHT
+	RIGHT,
+	//Only in Top Down
+#ifdef TOPDOWN
+	UP,
+	DOWN
+#endif
 };
 
 class Player
 {
 public:
 	Player();
-	Player(std::string& fileName, std::string& animationJSON, int width, int height, 
+	Player(std::string& fileName, std::string& animationJSON, int width, int height,
 		Sprite* sprite, AnimationController* controller, Transform* transform, bool hasPhys = false, PhysicsBody* body = nullptr);
 
-	void InitPlayer(std::string& fileName, std::string& animationJSON, int width, int height, 
+	void InitPlayer(std::string& fileName, std::string& animationJSON, int width, int height,
 		Sprite* sprite, AnimationController* controller, Transform* transform, bool hasPhys = false, PhysicsBody* body = nullptr);
 
 	void Update();
@@ -68,12 +88,41 @@ private:
 	//Have we locked the player from moving during this animation?
 	bool m_locked = false;
 
+	//checks if player is moving
 	bool boolMove = false;
+	//flag to check if player is allowed to jump
 	bool isJumping = false;
-	bool jump = false;
+	//float to track how long player has been jumping
+	float jumpTime = 0;
+	//flag to determine type of movement function player will be using
 	int moveToggle = 0;
-	float sTime = 0.f;
 
+	//float to track the time on Timer::time at the moment the stopwatch starts
+	float startTime = 0;
+	//float to track the current time on the stopwatch
+	float swNow = 0;
+	//float to track the start of the stopwatch function for the second move function
+	float move2Time = 0;
+	//float for tracking 
+	float letsAGo = 0;
+
+	//timer to start during the jump
+	float jumpStart = 0;
+	//boolean to track whether players can jump
+	bool timeToJump = false;
+
+	//float to track graphing intervals
+	float graphCounter = 0;
+
+
+	//vector to hold velocity
+	vec3 vel = vec3(0.f, 0.f, 0.f);
+	//vector to hold the second version of acceleration for direct movement controls
+	vec3 displacing = vec3(1.0, 0.f, 0.f);
+	//vector to hold displacement for direct movement controls
+	vec3 displacement = vec3(0.f, 0.f, 0.f);
+	//vector to hold new velocity for direct movement controls
+	vec3 imThere = vec3(0.f, 0.f, 0.f);
 
 
 	//A reference to our sprite
@@ -90,7 +139,7 @@ private:
 	bool m_hasPhysics = true;
 
 	//Default animation direction (feel free to change this to suit your game. If you're making a side-scroller, left or right would be better
-	AnimDir m_facing = RIGHT;
+	AnimDir m_facing = LEFT;
 };
 
 #endif // !__PLAYER_H__
