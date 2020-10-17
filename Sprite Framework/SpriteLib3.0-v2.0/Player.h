@@ -7,8 +7,6 @@
 using namespace std;
 
 
-//#define TOPDOWN
-
 enum AnimEnums
 {
 	IDLELEFT,

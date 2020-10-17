@@ -321,7 +321,7 @@ void Player::MovementUpdate()
 				if (graphCounter == 0)
 				{
 					//printing timer and player velocity information to console for graphing
-					printf("%f,%f, %f here \n", timer, player.GetVelocity().x, player.GetPosition().x);
+					printf("%f,%f, %f here \n", timer, player.GetVelocity().x, player.GetPosition().y);
 					//increasing graphCounter by 1
 					graphCounter++;
 				}
@@ -577,19 +577,6 @@ void Player::MovementUpdate()
 	{
 		//if player has reached the end of the level the console will close
 		exit(0);
-	}
-	//ending game if player falls into fire
-	else if (player.GetPosition().x <= -50.f)
-	{
-		//tracking start of death sequence
-		float deathTimer = Timer::time;
-		//updating death timer
-		float dying = StopWatch(deathTimer);
-		//if 3 seconds have elapsed since death trigger, close console
-		if (dying >= 3.f)
-		{
-			exit(0);
-		}
 	}
 }
 
