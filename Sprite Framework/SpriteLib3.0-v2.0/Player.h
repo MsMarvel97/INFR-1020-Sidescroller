@@ -18,7 +18,13 @@ enum AnimEnums
 	JUMPRIGHT,
 
 	ATTACKLEFT,
-	ATTACKRIGHT
+	ATTACKRIGHT,
+
+	PUSHLEFT,
+	PUSHRIGHT,
+
+	DEATHLEFT,
+	DEATHRIGHT
 };
 
 enum AnimTypes
@@ -27,7 +33,9 @@ enum AnimTypes
 	WALK = 2,
 	RUN = 4,
 	JUMP = 6,
-	ATTACK = 8
+	ATTACK = 8,
+	PUSH = 10,
+	DEATH = 12
 };
 
 enum AnimDir

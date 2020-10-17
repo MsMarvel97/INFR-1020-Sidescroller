@@ -84,6 +84,20 @@ void Player::InitPlayer(std::string& fileName, std::string& animationJSON, int w
 	//Attack Right
 	m_animController->AddAnimation(animations["AttackRight"].get<Animation>());
 
+	//PUSH ANIMATIONS
+
+	//Push Left
+	m_animController->AddAnimation(animations["PushLeft"].get<Animation>());
+	//Push Right
+	m_animController->AddAnimation(animations["PushRight"].get<Animation>());
+
+	//DEATH ANIMATIONS
+
+	//Death Left
+	m_animController->AddAnimation(animations["DeathLeft"].get<Animation>());
+	//Death Right
+	m_animController->AddAnimation(animations["DeathRight"].get<Animation>());
+
 	//Set Default Animation
 	m_animController->SetActiveAnim(IDLERIGHT);
 }
@@ -534,7 +548,7 @@ void Player::AnimationUpdate()
 			activeAnimation = WALK;
 		}
 	}
-	else if (m_attacking)
+	else if (Input::GetKey(Key::Space))
 	{
 		activeAnimation = ATTACK;
 

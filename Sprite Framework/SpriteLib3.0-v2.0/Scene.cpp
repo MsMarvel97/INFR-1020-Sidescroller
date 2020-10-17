@@ -127,7 +127,7 @@ void Scene::CreateCameraEntity(bool mainCamera, float windowWidth, float windowH
 	}
 }
 
-/*void Scene::CreateSpriteEntity()
+void Scene::CreateSpriteEntity(bool type, std::string file, float height, float width, float posx, float posy, float posz, float posX, float posY)
 	{
 		//Create Entity
 		auto entity = ECS::CreateEntity();
@@ -135,10 +135,55 @@ void Scene::CreateCameraEntity(bool mainCamera, float windowWidth, float windowH
 		//Adds Components
 		ECS::AttachComponent<Sprite>(entity);
 		ECS::AttachComponent<Transform>(entity);
+		ECS::AttachComponent<PhysicsBody>(entity);
 
-		//Setup Components
-		std::string fileName = 
-	}*/
+		//Setup the Components
+		std::string fileName = file;
+		ECS::GetComponent<Sprite>(entity).LoadSprite(fileName, height, width);
+		ECS::GetComponent<Transform>(entity).SetPosition(vec3(posx, posy, posz));
+
+		auto& tempSprite = ECS::GetComponent<Sprite>(entity);
+		auto& tempPhysBody = ECS::GetComponent<PhysicsBody>(entity);
+
+		float shrinkX = 0.f;
+		float shrinkY = 0.f;
+		b2Body* tempBody;
+		b2BodyDef tempDef;
+
+		if (type == true)
+		{
+			tempDef.type = b2_staticBody;
+		}
+		else
+		{
+			tempDef.type = b2_dynamicBody;
+		}
+
+		tempDef.position.Set(float32(posX), float32(posY)); //set position
+
+		tempBody = m_physicsWorld->CreateBody(&tempDef);
+
+		tempPhysBody = PhysicsBody(tempBody, float(tempSprite.GetWidth() - shrinkX), float(tempSprite.GetHeight() - shrinkY), vec2(0.f, 0.f), false);
+	}
+
+void Scene::CreateBackground(std::string file, float height, float width, float transparency, float posx, float posy, float posz)
+{
+	//Scene::CreateSprite(m_sceneReg, "boxSprite.jpg", 100, 60, 0.5f, vec3(0.f, 0.f, 0.f));
+
+	//Creates entity
+	auto entity = ECS::CreateEntity();
+
+	//Adds Components
+	ECS::AttachComponent<Sprite>(entity);
+	ECS::AttachComponent<Transform>(entity);
+
+	//Setup the Components
+	std::string fileName = file;
+	ECS::GetComponent<Sprite>(entity).LoadSprite(fileName, height, width);
+	ECS::GetComponent<Sprite>(entity).SetTransparency(transparency);
+	ECS::GetComponent<Transform>(entity).SetPosition(vec3(posx, posy, posz));
+}
+
 entt::registry* Scene::GetScene() const
 {
 	return m_sceneReg;

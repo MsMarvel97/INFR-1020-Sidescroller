@@ -27,7 +27,8 @@ public:
 	void AdjustScrollOffset();
 	void CreateCameraEntity(bool mainCamera, float windowWidth, float windowHeight, float left, float right, float bottom, float top, 
 								float zNear, float zFar, float aspectRatio, bool vertScroll=false, bool horizScroll=false);
-
+	void CreateSpriteEntity(bool type, std::string file, float height, float width, float posx, float posy, float posz, float posX, float posY);
+	void CreateBackground(std::string file, float height, float width, float transparency, float posx, float posy, float posz);
 	//Gamepad Input
 	//Because these are virtual you can override them in your inherited classes.
 	//The same way you do for Update().
