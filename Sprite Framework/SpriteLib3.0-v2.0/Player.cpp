@@ -321,7 +321,7 @@ void Player::MovementUpdate()
 				if (graphCounter == 0)
 				{
 					//printing timer and player velocity information to console for graphing
-					printf("%f,%f \n", timer, player.GetVelocity().x);
+					printf("%f,%f, %f here \n", timer, player.GetVelocity().x, player.GetPosition().x);
 					//increasing graphCounter by 1
 					graphCounter++;
 				}
@@ -571,6 +571,12 @@ void Player::MovementUpdate()
 			}
 
 		}
+	}
+	//checking to see if the player has made it to the end of the level
+	if (player.GetPosition().x >= 1380.f)
+	{
+		//if player has reached the end of the level the console will close
+		exit(0);
 	}
 }
 

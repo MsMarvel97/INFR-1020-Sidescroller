@@ -101,11 +101,6 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 
 		ECS::GetComponent<PhysicsBody>(MainEntities::MainPlayer()).GetBody()->SetFixedRotation(true);
 		
-		if (ECS::GetComponent<Transform>(MainEntities::MainPlayer()).GetPositionX() >= 1280.f)
-		{
-			exit(0);
-		}
-		
 
 	}
 
